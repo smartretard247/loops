@@ -3,10 +3,9 @@
         <div id="footer">
             <?php ShowAlert(); ?>
             
-            <?php if($_SESSION['admin_enabled']) : ?>
-                <b><a href="http://<?php echo $localIP; ?>/">Go Back To Server</a></b><br/>
-            <?php endif;
-                if($_SESSION['debug']) {
+            <b><a href="index.php">Back</a></b><br/>
+            
+            <?php if($_SESSION['debug']) {
                     echo '<ul>';
                     
                     if($_POST) {

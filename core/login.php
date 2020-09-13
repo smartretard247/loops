@@ -1,9 +1,8 @@
 <?php $root = filter_input(INPUT_SERVER, 'DOCUMENT_ROOT'); //get root folder for relative paths
     session_save_path($root . '/sessions'); session_start();
     
-    include_once $_SESSION['rootDir'] . '../../database.php'; $db = new Database('ssa');
+    include_once $_SESSION['rootDir'] . '../../database.php'; $db = new Database($_SESSION['database']);
     include_once $_SESSION['rootDir'] . 'account.php'; $cAccount = new Account;
-    include_once $_SESSION['rootDir'] . 'cart.php'; $cCart = new Cart;
     
     $cAccount->SetUsername(strtolower(filter_input(INPUT_POST, 'Username')));
     $cAccount->SetPassword(filter_input(INPUT_POST, 'ThePassword'));
@@ -33,19 +32,19 @@
                 case 4: //jesse
                     $_SESSION['admin_enabled'] = true;
                     $_SESSION['debug'] = true;
-                    $goto = "?action=view_inventory";
+                    $goto = "?action=view_schedule";
                     break;
                 case 3: //anne
                     $_SESSION['admin_enabled'] = true;
                     $_SESSION['debug'] = false;
-                    $goto = "?action=view_orders&s=OrderDateTime&d=1";
+                    $goto = "?action=view_schedule";
                     break;
                 case 2: //karen
                     $_SESSION['admin_enabled'] = true;
-                    $goto = "?action=view_orders&s=OrderDateTime&d=1";
+                    $goto = "?action=view_schedule";
                     break;
                 default:
-                    $goto = "?action=view_new_items";
+                    $goto = "?action=view_schedule";
                     break;
             }
         } else { $_SESSION['alert'] = 'Invalid username and/or password.  Please try again.'; }

@@ -78,7 +78,7 @@
     }
     
     public function SetFromDB($username) {
-        require_once '../database.php';
+        require_once '../../database.php';
         global $db;
 
         $dbItem = $db->SafeFetch("SELECT * FROM accounts WHERE `ID` = :0",array($username));

@@ -3,8 +3,8 @@
 <html>
     <!-- the head section -->
     <head>
-        <title>Simply Silver AKY</title>
-        <link rel="stylesheet" type="text/css" href="../../CSS/ssa.css" />
+        <title>Anne's InstaLoops</title>
+        <link rel="stylesheet" type="text/css" href="../../CSS/loop.css" />
         
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <style type="text/css">@import "JS/jquery.datepick.css";</style>
@@ -37,14 +37,13 @@
                 <?php if($_SESSION['valid_user']) : ?>
                     <img src="Images/banneruser.png" width="100%" alt="Simply Silver AKY" usemap="#map-banner-loggedin"/>
                     <map name="map-banner-loggedin" style="cursor:pointer;">
-                        <area shape="rect" coords="1175,35,1235,56" href="core/logout.php" alt="Logout"/>
-                        <area shape="rect" coords="1075,35,1155,56" href="index.php?action=view_my_cart" alt="View Cart"/>
+                        <area shape="rect" coords="880,14,940,56" href="core/logout.php" alt="Logout"/>
                     </map>
                     <br />
                 <?php else : ?>
                     <img src="Images/banner.png" width="100%" alt="Simply Silver AKY" usemap="#map-banner"/>
                     <map name="map-banner" style="cursor:pointer;">
-                        <area shape="rect" coords="1075,35,1155,56" href="index.php?action=view_my_cart" alt="View Cart"/>
+                        
                     </map>
                 <?php endif; ?>
             </center>
