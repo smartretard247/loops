@@ -16,7 +16,7 @@
         <?php foreach ($eventVIPs as $nextV) : ?>
             <tr>
                 <td>
-                    <?php echo $nextV['AtName'] . " (" . $nextV['Number'] . " of " . $nextV['Total'] . ")"; ?>
+                    <?php echo $nextV['AtName']; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -29,7 +29,7 @@
         <?php foreach ($eventGhosts as $nextG) : ?>
             <tr>
                 <td>
-                    <?php echo $nextG['AtName'] . " (" . $nextG['Number'] . " of " . $nextG['Total'] . ")"; ?>
+                    <?php echo $nextG['AtName']; ?>
                 </td>
             </tr>
         <?php endforeach; ?>

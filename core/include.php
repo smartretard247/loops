@@ -1,5 +1,5 @@
 <?php 
-    include_once $_SESSION['rootDir'] . '../database.php'; $db = new Database($_SESSION['database']);
+    include_once $_SESSION['rootDir'] . $adj . '../database.php';
     
     function ShowError() {
         //display error message
@@ -46,4 +46,37 @@
             return false;
         }
         return true;
+    }
+    
+    function getDbId($accessCode) {
+        $sigBit = getMsb($accessCode);
+        return log($sigBit,2)+1; #get the ID of the most recent page/database
+    }
+    
+    function getSigBit($n) {
+        return pow(2, $n-1); #convert to power of 2
+    }
+    
+    function setDbData($dbId) {
+        global $db;
+        $dbData = $db->SafeFetch("SELECT * FROM pages WHERE ID = :0",array($dbId));
+        if($dbData) {
+            $_SESSION['database'] = $dbData['DatabaseName'];
+            $_SESSION['page'] = $dbData['LoopName'];
+            $_SESSION['activeDbId'] = $dbData['ID'];
+        } else {
+            $_SESSION['database'] = "loop";
+            $_SESSION['page'] = "Anne's InstaLoops";
+            $_SESSION['activeDbId'] = 1;
+        }
+    }
+    
+    function setBanner() {
+        $_SESSION['banner'] = "Images/banners/" . $_SESSION['database'] .  "/banner.png";
+        $_SESSION['banneruser'] = "Images/banners/" . $_SESSION['database'] .  "/banneruser.png";
+    }
+    
+    function getMsb($n)  { 
+        $k =(int)(log($n, 2)); 
+        return (int)(pow(2, $k)); 
     }

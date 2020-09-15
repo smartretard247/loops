@@ -7,6 +7,7 @@
     private $mi;
     private $email;
     private $title;
+    private $accessCode;
     
     private $prefRowCount;
 
@@ -14,6 +15,9 @@
     
     public function GetUsername() { return $this->username; }
     public function SetUsername($to) { $this->username = $to; }
+    
+    public function GetAccessCode() { return $this->accessCode; }
+    public function SetAccessCode($to) { $this->accessCode = $to; }
     
     public function GetPassword() { return $this->thePassword; }
     public function SetPassword($to) { $this->thePassword = md5($to); }
@@ -51,6 +55,7 @@
         $this->email = '';
         $this->title = '';
         $this->prefRowCount = 0;
+        $this->accessCode = 1;
     
         self::$AccountCount++;
     }
@@ -91,5 +96,6 @@
         $this->SetEmail($dbItem['Email']);
         $this->SetTitle($dbItem['Title']);
         $this->SetPrefRowCount($dbItem['PrefRowCount']);
+        $this->SetAccessCode($dbItem['AccessCode']);
     }
 }
