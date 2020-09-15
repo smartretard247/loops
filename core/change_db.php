@@ -13,6 +13,7 @@
             $dbIdSigBit = getSigBit($dbId);
             if($accessCode & $dbIdSigBit) { #check if bit is on within the access code
                 setDbData($dbId);
+                setBanner();
             } else {
                 $_SESSION['alert'] = 'You do not have permission for the requested loop page.';
                 header("location:../?action=view_schedule");

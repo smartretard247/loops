@@ -7,6 +7,21 @@
         </tr>
         
         <tr>
+            <td><b>Feature Dates</b></td>
+        </tr>
+        <?php foreach ($userSchedule as $next) : ?>
+            <?php if($next['Seat'] == 'Feature') : ?>
+                <tr>
+                    <td><?php ++$userFeatureCount; echo $next['EventDate'] . " (" . $next['Number'] . " of " . $next['Total'] . ")"; ?></td>
+                </tr>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <?php if(!($userFeatureCount > 0)) : ?>
+                <tr><td>No Feature reservations</td></tr>
+        <?php endif; ?>
+        <tr><td></td></tr>
+        
+        <tr>
             <td><b>VIP Dates</b></td>
         </tr>
         <?php foreach ($userSchedule as $next) : ?>

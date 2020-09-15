@@ -9,9 +9,13 @@
         $seat = filter_input(INPUT_POST, 'seat');
         $atName = filter_input(INPUT_POST, 'atName');
         if(substr($atName,0,1) == "@") {
+            $requestedEventID = filter_input(INPUT_POST, 'eventID');
             $number = filter_input(INPUT_POST, 'number');
             $count = 0;
-            $nextSeats = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()+1 AND ($seat > 0) AND Deleted = 0 ORDER BY EventDate LIMIT $number");
+            $nextSeats = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()+INTERVAL 1 DAY AND ($seat > 0) AND ID NOT IN (SELECT EventId FROM reservations WHERE AtName = :0) AND Deleted = 0 ORDER BY EventDate LIMIT $number",array("$atName"));
+            if($nextSeats[0]['ID'] != $requestedEventID) {
+                $_SESSION['message'] = "$atName was already part of requested event.  Moved to " . $nextSeats[0]['EventDate'];
+            }
             foreach ($nextSeats as $next) {
                 ++$count;
                 $eventID = $next['ID'];

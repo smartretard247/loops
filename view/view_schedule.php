@@ -1,10 +1,17 @@
 <center>
 <?php if($_SESSION['valid_user']) : ?>
     <?php 
-        $orders = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-1 AND Deleted = 0 ORDER BY $sortby $desc");
-        $nextGhost = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-1 AND (Ghost > 0) AND Deleted = 0 ORDER BY EventDate LIMIT 1");
+        $orders = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-INTERVAL 1 DAY AND Deleted = 0 ORDER BY $sortby $desc");
+        $nextFeature = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-1 AND (Feature > 0) AND Deleted = 0 ORDER BY EventDate LIMIT 1");
         $nextVIP = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-1 AND (VIP > 0) AND Deleted = 0 ORDER BY EventDate LIMIT 1");
+        $nextGhost = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-1 AND (Ghost > 0) AND Deleted = 0 ORDER BY EventDate LIMIT 1");
         $columns = 4;
+        
+        if($_SESSION['admin_enabled']) {
+            $pending[0] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'VIP' ORDER BY ID");
+            $pending[1] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Ghost' ORDER BY ID");
+            $pending[2] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Feature' ORDER BY ID");
+        }
     ?>
     
     <table class="topmargin" style="width: 95%; border-bottom: solid 1px black">
@@ -12,15 +19,15 @@
             <th colspan="5">Next Open VIP Slot</th>
         </tr>
         <tr>
-            <td rowspan="4">Date: <?php echo $nextVIP[0]['EventDate']; ?></td>
-            <td rowspan="4">Seats: <?php echo $nextVIP[0]['VIP']; ?></td>
+            <td rowspan="4">Date: <?php echo ($nextVIP[0]) ? $nextVIP[0]['EventDate'] : "TBD"; ?></td>
+            <td rowspan="4">Seats: <?php echo ($nextVIP[0]) ? $nextVIP[0]['VIP'] : 5; ?></td>
             <td>
                 <form action="core/submit_reservation.php" method="post">
                     <input name="action" type="hidden" value="reserve_seat"/>
                     <input name="seat" type="hidden" value="VIP"/>
                     <input name="eventID" type="hidden" value="<?php echo $nextVIP[0]['ID']; ?>"/>
                     @Name: <input name="atName" type="text" title="Enter @name of customer"/>
-                    
+
                     </td>
                     <td>
                     Pack: <select name="number" title="Enter package size">
@@ -29,7 +36,7 @@
                         <option value="8">8</option>
                     </select>
                     </td>
-                    
+
         </tr>
         <tr><td></td></tr>
         <tr><td></td></tr>
@@ -46,15 +53,15 @@
             <th colspan="5">Next Open Ghost Slot</th>
         </tr>
         <tr>
-            <td rowspan="4">Date: <?php echo $nextGhost[0]['EventDate']; ?></td>
-            <td rowspan="4">Seats: <?php echo $nextGhost[0]['Ghost']; ?></td>
+            <td rowspan="4">Date: <?php echo ($nextGhost[0]) ? $nextGhost[0]['EventDate'] : "TBD"; ?></td>
+            <td rowspan="4">Seats: <?php echo ($nextGhost[0]) ? $nextGhost[0]['Ghost'] : 8; ?></td>
             <td>
                 <form action="core/submit_reservation.php" method="post">
                     <input name="action" type="hidden" value="reserve_seat"/>
                     <input name="seat" type="hidden" value="Ghost"/>
                     <input name="eventID" type="hidden" value="<?php echo $nextGhost[0]['ID']; ?>"/>
                     @Name: <input name="atName" type="text" title="Enter @name of customer"/>
-                    
+
                     </td>
                     <td>
                     Pack: <select name="number" title="Enter package size">
@@ -74,15 +81,47 @@
         </tr>
     </table>
     
+    <table class="topmargin" style="width: 95%; border-bottom: solid 1px black">
+            <tr>
+                <th colspan="5">Next Open Feature Slot</th>
+            </tr>
+            <tr>
+                <td rowspan="4">Date: <?php echo ($nextFeature[0]) ? $nextFeature[0]['EventDate'] : "TBD"; ?></td>
+                <td rowspan="4">Seats: <?php echo ($nextFeature[0]) ? $nextFeature[0]['Feature'] : 1; ?></td>
+                <td>
+                    <form action="core/submit_reservation.php" method="post">
+                        <input name="action" type="hidden" value="reserve_seat"/>
+                        <input name="seat" type="hidden" value="Feature"/>
+                        <input name="eventID" type="hidden" value="<?php echo $nextFeature[0]['ID']; ?>"/>
+                        @Name: <input name="atName" type="text" title="Enter @name of customer"/>
+
+                        </td>
+                        <td>
+                        Pack: <select name="number" title="Enter package size">
+                            <option value="1">1</option>
+                        </select>
+                        </td>
+
+            </tr>
+            <tr><td></td></tr>
+            <tr><td></td></tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Reserve"/>
+                    </form>
+                </td>
+            </tr>
+    </table>
+    
     <table id="orders" class="topmargin" style="width: 95%; border-bottom: solid 1px black">
         <tr>
             <th colspan="<?php echo $columns; ?>">All Upcoming Events</th>
         </tr>
         <tr>
-            <th><a href="index.php?action=view_schedule&s=EventDate">&#x25B2;</a>Date<a href="index.php?action=view_schedule&s=EventDate&d=1">&#x25BC;</a></th>
-            <th><a href="index.php?action=view_schedule&s=VIP">&#x25B2;</a>VIPs<a href="index.php?action=view_schedule&s=VIP&d=1">&#x25BC;</a></th>
-            <th><a href="index.php?action=view_schedule&s=Ghost">&#x25B2;</a>Ghosts<a href="index.php?action=view_schedule&s=Ghost&d=1">&#x25BC;</a></th>
-            <th>Options</th>
+            <th>Date</th>
+            <th>VIPs</th>
+            <th>Ghosts</th>
+            <th>Feature</th>
         </tr>
         <?php if($orders) { foreach ($orders as $torders) : ?>
             <tr>
@@ -96,15 +135,7 @@
                     <?php echo $torders['Ghost']; ?>
                 </td>
                 <td>
-                    <?php if($_SESSION['admin_enabled']) : ?>
-                        <form action="core/delete_event.php" method="post">
-                            <input name="action" type="hidden" value="delete_event"/>
-                            <input name="eventID" type="hidden" value="<?php echo $torders['ID']; ?>"/>
-                            <input type="submit" value="X" onclick="return confirm('Are you sure you want to delete this event?')"/>
-                        </form>
-                    <?php else : ?>
-                        None
-                    <?php endif; ?>
+                    <?php echo $torders['Feature']; ?>
                 </td>
             </tr>
         <?php endforeach; } ?>
@@ -127,48 +158,32 @@
     
     <table class="topmargin" style="width: 95%; border-bottom: solid 1px black">
         <tr>
-            <th colspan="2">
+            <th colspan="3">
                 Waitlist
             </th>
         </tr>
         
         <tr>
-            <td>
-                <?php if($pendingVIPs) : ?>
-                    <table class="topmargin" style="width: 100%; border-bottom: solid 1px black">
-                        <tr>
-                            <th colspan="1">Pending VIPs</th>
-                        </tr>
-                        <?php foreach ($pendingVIPs as $pendingV) : ?>
+            <?php $i = 0; foreach($pending as $package) : ?>
+                <td>
+                    <?php if($package) : ?>
+                        <table class="topmargin" style="width: 100%; border-bottom: solid 1px black">
                             <tr>
-                                <td>
-                                    <?php echo $pendingV['AtName'] . " (" . $pendingV['Number'] . " of " . $pendingV['Total'] . ")"; ?>
-                                </td>
+                                <th colspan="1"><?php echo $availablePackages[$i]; ?>s</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </table>
-                <?php else : ?>
-                    No pending VIPs.
-                <?php endif; ?>
-            </td>
-            <td>
-                <?php if($pendingGhosts) : ?>
-                    <table class="topmargin" style="width: 100%; border-bottom: solid 1px black">
-                        <tr>
-                            <th colspan="1">Pending Ghosts</th>
-                        </tr>
-                        <?php foreach ($pendingGhosts as $pendingG) : ?>
-                            <tr>
-                                <td>
-                                    <?php echo $pendingG['AtName'] . " (" . $pendingG['Number'] . " of " . $pendingG['Total'] . ")"; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
-                <?php else : ?>
-                    No pending ghosts.
-                <?php endif; ?>
-            </td>
+                            <?php foreach ($package as $row) : ?>
+                                <tr>
+                                    <td>
+                                        <?php echo $row['AtName'] . " (" . $row['Number'] . " of " . $row['Total'] . ")"; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    <?php else : ?>
+                        No pending <?php echo $availablePackages[$i++]; ?>s.
+                    <?php endif; ?>
+                </td>
+            <?php endforeach; ?>
         </tr>
     </table>
 <?php else : ?>
@@ -177,11 +192,6 @@
 <?php endif;
     
 if($_SESSION['admin_enabled']) : ?>
-    <?php 
-        $pendingGhosts = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Ghost' ORDER BY ID");
-        $pendingVIPs = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'VIP' ORDER BY ID");
-    ?>
-    
     <br/>--ADMIN ONLY--
     
     <table class="topmargin" style="width: 95%; border-bottom: solid 1px black">
@@ -192,6 +202,7 @@ if($_SESSION['admin_enabled']) : ?>
             <td rowspan="4">
                 <form action="core/schedule_event.php" method="post">
                     <input name="action" type="hidden" value="schedule_event"/>
+                    <input name="features" type="hidden" value="1"/>
                     VIP Slots: <input name="vips" type="text" value="5" size="1"/>
                 </td>
                 <td rowspan="4">

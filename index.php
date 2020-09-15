@@ -28,6 +28,8 @@
     $allPages = $dbMain->SafeFetchAll("SELECT ID, LoopName, DatabaseName FROM pages WHERE Retired = 0 ORDER BY ID");
     
     $db = new Database($_SESSION['database']); #dbMain becomes secondary connection to this database
+    
+    $availablePackages = array('VIP', 'Ghost', 'Feature'); #change to get from DB
 
     $topOfNewItems = -620;
     
@@ -37,13 +39,10 @@
     if(empty($_SESSION['error_message'])) { $_SESSION['error_message'] = ''; }
     if(empty($_SESSION['message'])) { $_SESSION['message'] = ''; }
     if(empty($_SESSION['alert'])) { $_SESSION['alert'] = ''; }
-    if(empty($_SESSION['edit_mode'])) { $_SESSION['edit_mode'] = false; }
     if(empty($_SESSION['max_per_page'])) { $_SESSION['max_per_page'] = 10; }
     if(empty($_SESSION['banner'])) { $_SESSION['banner'] = "Images/banners/" . $_SESSION['database'] .  "/banner.png"; }
     if(empty($_SESSION['banneruser'])) { $_SESSION['banneruser'] = "Images/banners/" . $_SESSION['database'] .  "/banneruser.png"; }
-
-    $_SESSION['thumb_lw'] = 150;
-    $_SESSION['image_lw'] = 400;
+    $_SESSION['editing'] = false; #edit action will re-enable
     
     include_once 'view/header.php';
 
@@ -85,8 +84,19 @@
         case 'delete_event':
             include 'view/view_schedule.php';
             break;
+        case 'delete_seat':
+            include 'view/view_schedule.php';
+            break;
         case 'schedule_event':
             include 'view/view_schedule.php';
+            break;
+        case 'edit_event':
+            if($_SESSION['admin_enabled']) { $_SESSION['editing'] = true; } else { $_SESSION['editing'] = false; }
+            if($viewID > 0) {
+                include 'view/view_event.php';
+            } else {
+                include 'view/view_schedule.php';
+            }
             break;
         case 'view_event':
             if($viewID > 0) {

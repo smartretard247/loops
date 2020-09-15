@@ -50,15 +50,22 @@
                         </select>
                     </form>
                 
-                    <img src="<?php echo $_SESSION['banneruser']; ?>" width="100%" alt="Anne's Loops" usemap="#map-banner-loggedin"/>
-                    <map name="map-banner-loggedin" style="cursor:pointer;">
-                        <area shape="rect" coords="880,14,940,56" href="core/logout.php" alt="Logout"/>
-                    </map>
-                    <br />
+                    <div>
+                        <img style="height: 6vh; background-size: cover; -webkit-background-size: 100%; ; width: 100%;" src="<?php echo $_SESSION['banneruser']; ?>" usemap="#map-banner-loggedin"/>
+                        <map name="map-banner-loggedin" style="cursor:pointer;">
+                            <area shape="rect" coords="880,14,940,56" href="core/logout.php" alt="Logout"/>
+                        </map>
+                        <br/>
+                        <h2 style="display: inline; position: absolute; top: 55px; left: 10%; background-color: rgba(201, 76, 76, 0.7); width: 80%; font-size: 50px;"><?php echo $_SESSION['page']; ?></h2>
+                    </div>
                 <?php else : ?>
-                    <img src="<?php echo $_SESSION['banner']; ?>" width="100%" alt="Anne's Loops" usemap="#map-banner"/>
-                    <map name="map-banner" style="cursor:pointer;">
-                        
-                    </map>
+                    <div>
+                        <img style="height: 6vh; background-size: cover; -webkit-background-size: 100%; ; width: 100%;" src="<?php echo $_SESSION['banner']; ?>" usemap="#map-banner-loggedin"/>
+                        <map name="map-banner-loggedin" style="cursor:pointer;">
+                            
+                        </map>
+                        <br/>
+                        <h2 style="display: inline; position: absolute; top: 13px; left: 10%; background-color: rgba(201, 76, 76, 0.7); width: 80%; font-size: 50px;"><?php echo $_SESSION['page']; ?></h2>
+                    </div>
                 <?php endif; ?>
             </center>
