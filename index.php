@@ -29,7 +29,7 @@
     
     $db = new Database($_SESSION['database']); #dbMain becomes secondary connection to this database
     
-    $availablePackages = array('VIP', 'Ghost', 'Feature'); #change to get from DB
+    $availablePackages = array('VIP', 'Ghost'); #change to get from DB
 
     $topOfNewItems = -620;
     

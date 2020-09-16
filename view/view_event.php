@@ -4,7 +4,7 @@
     
         $eventPackage[0] = $db->SafeFetchAll("SELECT AtName, Number, Total FROM reservations WHERE EventID = :0 AND Seat = 'VIP'",array($viewID));
         $eventPackage[1] = $db->SafeFetchAll("SELECT AtName, Number, Total FROM reservations WHERE EventID = :0 AND Seat = 'Ghost'",array($viewID));
-        $eventPackage[2] = $db->SafeFetchAll("SELECT AtName, Number, Total FROM reservations WHERE EventID = :0 AND Seat = 'Feature'",array($viewID));
+        #$eventPackage[2] = $db->SafeFetchAll("SELECT AtName, Number, Total FROM reservations WHERE EventID = :0 AND Seat = 'Feature'",array($viewID));
     ?>
     
     <table id="orders" class="topmargin" style="width: 95%; border-bottom: solid 1px black">
@@ -47,7 +47,7 @@
                     </td>
                 </tr>
             <?php endforeach; ?>
-            <?php NoDataRow($package, 1, "No " . $availablePackages[$i++] . " in this event") ?>
+            <?php NoDataRow($package[0], 1, "No " . $availablePackages[$i++] . " in this event") ?>
         <?php endforeach; ?>
             
     </table>

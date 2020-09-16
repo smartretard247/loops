@@ -2,17 +2,34 @@
 <?php if($_SESSION['valid_user']) : ?>
     <?php 
         $orders = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-INTERVAL 1 DAY AND Deleted = 0 ORDER BY $sortby $desc");
-        $nextFeature = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-1 AND (Feature > 0) AND Deleted = 0 ORDER BY EventDate LIMIT 1");
         $nextVIP = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-1 AND (VIP > 0) AND Deleted = 0 ORDER BY EventDate LIMIT 1");
         $nextGhost = $db->SafeFetchAll("SELECT * FROM schedule WHERE EventDate >= NOW()-1 AND (Ghost > 0) AND Deleted = 0 ORDER BY EventDate LIMIT 1");
+        
+        $weekNo = getWeekNum(); #change to function to get % 52 of the ID, convert to start/end dates
+        $currentFeature = $db->SafeFetch("SELECT AtName FROM features WHERE ID = :0",array($weekNo));
+        $nextFeature = $db->SafeFetchAll("SELECT * FROM features WHERE ID > $weekNo AND AtName IS NULL ORDER BY ID LIMIT 1");
+        if(!$nextFeature) { $nextFeature = $db->SafeFetchAll("SELECT * FROM features WHERE ID > 0 AND AtName IS NULL ORDER BY ID LIMIT 1"); }
+        
         $columns = 4;
         
         if($_SESSION['admin_enabled']) {
             $pending[0] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'VIP' ORDER BY ID");
             $pending[1] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Ghost' ORDER BY ID");
-            $pending[2] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Feature' ORDER BY ID");
+            #$pending[2] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Feature' ORDER BY ID");
         }
+        
     ?>
+    
+    <table class="topmargin" style="width: 95%; border-bottom: solid 1px black">
+        <tr>
+            <th>Featured This Week</th>
+        </tr>
+        <tr>
+            <td>
+                <?php echo ($currentFeature['AtName']) ? $currentFeature['AtName'] : "No feature this week."; ?>
+            </td>
+        </tr>
+    </table>
     
     <table class="topmargin" style="width: 95%; border-bottom: solid 1px black">
         <tr>
@@ -86,22 +103,21 @@
                 <th colspan="5">Next Open Feature Slot</th>
             </tr>
             <tr>
-                <td rowspan="4">Date: <?php echo ($nextFeature[0]) ? $nextFeature[0]['EventDate'] : "TBD"; ?></td>
-                <td rowspan="4">Seats: <?php echo ($nextFeature[0]) ? $nextFeature[0]['Feature'] : 1; ?></td>
+                <?php $week = getStartAndEndDate($nextFeature[0]['ID']); ?>
+                <td rowspan="4" colspan="2">Date: <?php echo ($nextFeature[0]) ? $week['week_start'] . " - " . $week['week_end'] : "TBD"; ?></td>
+                
                 <td>
                     <form action="core/submit_reservation.php" method="post">
                         <input name="action" type="hidden" value="reserve_seat"/>
                         <input name="seat" type="hidden" value="Feature"/>
-                        <input name="eventID" type="hidden" value="<?php echo $nextFeature[0]['ID']; ?>"/>
+                        <input name="week" type="hidden" value="<?php echo $nextFeature[0]['ID']; ?>"/>
                         @Name: <input name="atName" type="text" title="Enter @name of customer"/>
-
-                        </td>
-                        <td>
-                        Pack: <select name="number" title="Enter package size">
-                            <option value="1">1</option>
-                        </select>
-                        </td>
-
+                </td>
+                <td>
+                    Pack: <select name="number" title="Enter package size">
+                        <option value="1">1</option>
+                    </select>
+                </td>
             </tr>
             <tr><td></td></tr>
             <tr><td></td></tr>
@@ -121,7 +137,6 @@
             <th>Date</th>
             <th>VIPs</th>
             <th>Ghosts</th>
-            <th>Feature</th>
         </tr>
         <?php if($orders) { foreach ($orders as $torders) : ?>
             <tr>
@@ -133,9 +148,6 @@
                 </td>
                 <td>
                     <?php echo $torders['Ghost']; ?>
-                </td>
-                <td>
-                    <?php echo $torders['Feature']; ?>
                 </td>
             </tr>
         <?php endforeach; } ?>
@@ -202,7 +214,6 @@ if($_SESSION['admin_enabled']) : ?>
             <td rowspan="4">
                 <form action="core/schedule_event.php" method="post">
                     <input name="action" type="hidden" value="schedule_event"/>
-                    <input name="features" type="hidden" value="1"/>
                     VIP Slots: <input name="vips" type="text" value="5" size="1"/>
                 </td>
                 <td rowspan="4">

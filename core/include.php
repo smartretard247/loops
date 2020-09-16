@@ -80,3 +80,16 @@
         $k =(int)(log($n, 2)); 
         return (int)(pow(2, $k)); 
     }
+    
+    function getWeekNum() {
+        return date("W");
+    }
+    
+    function getStartAndEndDate($week) {
+        $dto = new DateTime();
+        $dto->setISODate(date("Y"), $week);
+        $ret['week_start'] = $dto->format('Y-m-d');
+        $dto->modify('+6 days');
+        $ret['week_end'] = $dto->format('Y-m-d');
+        return $ret;
+    }
