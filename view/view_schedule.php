@@ -111,6 +111,7 @@
                         <input name="action" type="hidden" value="reserve_seat"/>
                         <input name="seat" type="hidden" value="Feature"/>
                         <input name="week" type="hidden" value="<?php echo $nextFeature[0]['ID']; ?>"/>
+                        <input name="year" type="hidden" value="<?php echo $week['week_year']; ?>"/>
                         @Name: <input name="atName" type="text" title="Enter @name of customer"/>
                 </td>
                 <td>

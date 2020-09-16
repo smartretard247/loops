@@ -33,7 +33,9 @@
             } else {
                 //process feature allocation dates
                 $week = filter_input(INPUT_POST, 'week');
-                if(!$db->SafeExec("UPDATE features SET AtName = :0 WHERE ID = :1",array("$atName",$week))) {
+                $year = filter_input(INPUT_POST, 'year');
+                $db->SafeExec("UPDATE features SET AtName = NULL WHERE ID < :0 AND Year < :1",array(getWeekNum()-1),date('Y')); //remove old reservations
+                if(!$db->SafeExec("UPDATE features SET AtName = :0, Year = :1 WHERE ID = :2",array("$atName",$year,$week))) {
                     $_SESSION['alert'] = "Error reserving feature for $atName, week number $week";
                     header("location:../?action=view_schedule");
                     exit();

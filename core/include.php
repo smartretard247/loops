@@ -86,10 +86,16 @@
     }
     
     function getStartAndEndDate($week) {
+        if($week < getWeekNum()) {
+            $year = date("Y")+1;
+        } else {
+            $year = date("Y");
+        }
+        $ret['week_year'] = $year;
         $dto = new DateTime();
-        $dto->setISODate(date("Y"), $week);
-        $ret['week_start'] = $dto->format('Y-m-d');
+        $dto->setISODate($year, $week);
+        $ret['week_start'] = $dto->format('m-d');
         $dto->modify('+6 days');
-        $ret['week_end'] = $dto->format('Y-m-d');
+        $ret['week_end'] = $dto->format('m-d');
         return $ret;
     }

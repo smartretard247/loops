@@ -9,9 +9,8 @@
         $eventDate = filter_input(INPUT_POST, 'eventDate');
         $ghosts = filter_input(INPUT_POST, 'ghosts');
         $vips = filter_input(INPUT_POST, 'vips');
-        $features = filter_input(INPUT_POST, 'features');
         if($eventDate) {
-            if(!$db->SafeExec("INSERT INTO schedule (EventDate, Ghost, VIP, Feature) VALUES (:0, :1, :2, :3)",array($eventDate,$ghosts,$vips,$features))) {
+            if(!$db->SafeExec("INSERT INTO schedule (EventDate, Ghost, VIP) VALUES (:0, :1, :2)",array($eventDate,$ghosts,$vips))) {
                 $_SESSION['alert'] = "Error scheduling event for $eventDate";
                 header("location:../?action=view_schedule");
                 exit();
@@ -22,7 +21,6 @@
 
                 $pending[0] = $db->SafeFetchAll("SELECT ID, AtName, Number, Total, Seat FROM (SELECT ID, MIN(AtName) AS AtName, Number, Total, Seat FROM pending GROUP BY AtName ORDER BY ID) uni WHERE Seat = 'Ghost' LIMIT $ghosts");
                 $pending[1] = $db->SafeFetchAll("SELECT ID, AtName, Number, Total, Seat FROM (SELECT ID, MIN(AtName) AS AtName, Number, Total, Seat FROM pending GROUP BY AtName ORDER BY ID) uni WHERE Seat = 'VIP' LIMIT $vips");
-                $pending[2] = $db->SafeFetchAll("SELECT ID, AtName, Number, Total, Seat FROM (SELECT ID, MIN(AtName) AS AtName, Number, Total, Seat FROM pending GROUP BY AtName ORDER BY ID) uni WHERE Seat = 'Feature' LIMIT $features");
                 
                 foreach($pending as $package) {
                     foreach ($package as $next) {
