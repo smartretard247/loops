@@ -2,8 +2,8 @@
 <?php if($_SESSION['valid_user']) : ?>
     <?php $eventDate = $db->SafeFetch("SELECT EventDate FROM schedule WHERE ID = $viewID");
     
-        $eventPackage[0] = $db->SafeFetchAll("SELECT AtName, Number, Total FROM reservations WHERE EventID = :0 AND Seat = 'VIP'",array($viewID));
-        $eventPackage[1] = $db->SafeFetchAll("SELECT AtName, Number, Total FROM reservations WHERE EventID = :0 AND Seat = 'Ghost'",array($viewID));
+        $eventPackage[0] = $db->SafeFetchAll("SELECT ID, AtName, Number, Total, Seat FROM reservations WHERE EventID = :0 AND Seat = 'VIP'",array($viewID));
+        $eventPackage[1] = $db->SafeFetchAll("SELECT ID, AtName, Number, Total, Seat FROM reservations WHERE EventID = :0 AND Seat = 'Ghost'",array($viewID));
         #$eventPackage[2] = $db->SafeFetchAll("SELECT AtName, Number, Total FROM reservations WHERE EventID = :0 AND Seat = 'Feature'",array($viewID));
     ?>
     
@@ -37,7 +37,7 @@
                         <?php if($_SESSION['editing']) : ?>
                             <form action="core/delete_seat.php" method="post" style="display: inline;">
                                 <input name="action" type="hidden" value="delete_seat"/>
-                                <input name="seat" type="hidden" value="VIP"/>
+                                <input name="seat" type="hidden" value="<?php echo $next['Seat']; ?>"/>
                                 <input name="atName" type="hidden" value="<?php echo $next['AtName']; ?>"/>
                                 <input name="reservationID" type="hidden" value="<?php echo $next['ID']; ?>"/>
                                 <input name="eventID" type="hidden" value="<?php echo $viewID; ?>"/>
