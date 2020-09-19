@@ -12,11 +12,9 @@
         
         $columns = 4;
         
-        if($_SESSION['admin_enabled']) {
-            $pending[0] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'VIP' ORDER BY ID");
-            $pending[1] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Ghost' ORDER BY ID");
-            #$pending[2] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Feature' ORDER BY ID");
-        }
+        $pending[0] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'VIP' ORDER BY ID");
+        $pending[1] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Ghost' ORDER BY ID");
+        #$pending[2] = $db->SafeFetchAll("SELECT * FROM pending WHERE Seat = 'Feature' ORDER BY ID");
         
     ?>
     
