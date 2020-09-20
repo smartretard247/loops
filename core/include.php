@@ -21,6 +21,14 @@
         }
     }
     
+    function AuditLog($message, $newline = true) {
+        if($newline) {
+            error_log($message . "\n", 3, "../" . $_SESSION['database'] .".log");
+        } else {
+            error_log($message, 3, "../" . $_SESSION['database'] .".log");
+        }
+    }
+    
     function NoDataRow($array, $colspan, $text = 'No data exists in the table.') {
         if($array == 0) {
             echo '<tr><td colspan="' . $colspan . '"><b>' . $text . '</b></td></tr>';
@@ -34,8 +42,10 @@
             return false;
         } elseif(!$db->SafeExec("INSERT INTO reservations (AtName, Seat, EventId, Number, Total) VALUES (:0, '$seat', :1, :2, :3)",array($atName,$eventID,$count,$number))) {
             $_SESSION['alert'] = "Error reserving $seat slot number $count of $number for user $atName";
+            AuditLog($_SESSION['valid_user'] . " failed to reserve $seat $count of $number for $atName. NEED TO MANUALLY INCREASE '$seat' FOR EVENT $eventID");
             return false;
         }
+        AuditLog($_SESSION['valid_user'] . " reserved $seat on event $eventID for $atName ($count of $number)");
         return true;
     }
     
@@ -45,6 +55,7 @@
             $_SESSION['alert'] = "Error removing reservation for ID $id";
             return false;
         }
+        AuditLog($_SESSION['valid_user'] . " removed pending reservation ID $id");
         return true;
     }
     

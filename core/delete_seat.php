@@ -16,13 +16,14 @@
                 header("location:../?action=view_schedule");
                 exit();
             }
+            AuditLog($_SESSION['valid_user'] . " deleted $atName's $seat reservation for event $eventID");
             
             if(!$db->SafeExec("UPDATE schedule SET $seat = $seat+1 WHERE ID = :0",array($eventID))) {
                 $_SESSION['alert'] = "Error increasing $seat count for event ID $eventID ($atName)";
                 header("location:../?action=view_schedule");
                 exit();
             }
-            
+            AuditLog($_SESSION['valid_user'] . " increased $seat available for event $eventID");
         }
     } else {
         $_SESSION['alert'] = 'You must be logged in to perform that function.';

@@ -48,7 +48,11 @@
             $dbId = getDbId($_SESSION['access_code']);
             setDbData($dbId);
             setBanner();
-        } else { $_SESSION['alert'] = 'Invalid username and/or password.  Please try again.'; }
+            AuditLog("Successful login: " . $_SESSION['valid_user']);
+        } else { 
+            $_SESSION['alert'] = 'Invalid username and/or password.  Please try again.';
+            AuditLog("Failed login: $username");
+        }
     } else { $_SESSION['alert'] = 'You must enter a username and password to login.  Please try again.'; }
     
     header("location:../" . $goto);

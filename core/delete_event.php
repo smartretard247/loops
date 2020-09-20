@@ -13,6 +13,7 @@
                 header("location:../?action=view_schedule");
                 exit();
             }
+            AuditLog($_SESSION['valid_user'] . " deleted event $eventID");
             
             #grab all reservations with this event id and reschedule
             $cancellations = $db->SafeFetchAll("SELECT AtName, Seat, Number, Total FROM reservations WHERE EventID = :0 ORDER BY ID",array($eventID));
@@ -31,6 +32,7 @@
                             header("location:../?action=view_schedule");
                             exit();
                         }
+                        AuditLog($_SESSION['valid_user'] . " reserved $atName for event $eventID as $seat ($number of $total)");
                     } else {
                         #add to pending
                         if(!$db->SafeExec("INSERT INTO pending (AtName, Number, Total, Seat) VALUES (:0, :1, :2, '$seat')",array($atName,$number,$total))) {
@@ -38,6 +40,7 @@
                             header("location:../?action=view_schedule");
                             exit();
                         }
+                        AuditLog($_SESSION['valid_user'] . " added pending $seat for $atName ($number of $total)");
                     }   
                 }
             }

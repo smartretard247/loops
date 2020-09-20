@@ -25,10 +25,11 @@
                 #add pending
                 for($i = $count; $i < $number; $i++) {
                     if(!$db->SafeExec("INSERT INTO pending (AtName, Number, Total, Seat) VALUES (:0, :1, :2, '$seat')",array($atName,$i+1,$number))) {
-                        $_SESSION['alert'] = "Error reserving $seat slot number $i of $number for user $atName";
+                        $_SESSION['alert'] = "Error reserving $seat slot number " . ($i+1) . " of $number for user $atName";
                         header("location:../?action=view_schedule");
                         exit();
                     }
+                    AuditLog($_SESSION['valid_user'] . " added pending $seat for $atName (" . ($i+1) . " of $number");
                 }
             } else {
                 //process feature allocation dates
@@ -40,6 +41,7 @@
                     header("location:../?action=view_schedule");
                     exit();
                 }
+                AuditLog($_SESSION['valid_user'] . " added $atName as feature for week $week of $year");
             }
         } else {
             $_SESSION['alert'] = "Username must begin name with @ symbol, no reservations were made.";

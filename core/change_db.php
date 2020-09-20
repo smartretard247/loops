@@ -16,6 +16,7 @@
                 setBanner();
             } else {
                 $_SESSION['alert'] = 'You do not have permission for the requested loop page.';
+                AuditLog($_SESSION['valid_user'] . " tried to access unauthorized database " . $_SESSION['database']);
                 header("location:../?action=view_schedule");
                 exit();
             }

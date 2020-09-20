@@ -15,6 +15,7 @@
                 header("location:../?action=view_schedule");
                 exit();
             } else {
+                AuditLog($_SESSION['valid_user'] . " added event on $eventDate with $ghosts Ghosts and $vips VIPs");
                 #success, add the pending ghost/vips
                 $lastId = $db->SafeFetch("SELECT MAX(ID) AS LastID FROM schedule");
                 $eventID = $lastId['LastID'];
