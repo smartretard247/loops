@@ -23,7 +23,7 @@
                 header("location:../?action=view_schedule");
                 exit();
             }
-            AuditLog($_SESSION['valid_user'] . " increased $seat available for event $eventID");
+            AuditLog(" and increased $seat's available", false);
         }
     } else {
         $_SESSION['alert'] = 'You must be logged in to perform that function.';

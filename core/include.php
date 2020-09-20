@@ -21,9 +21,9 @@
         }
     }
     
-    function AuditLog($message, $newline = true) {
-        if($newline) {
-            error_log($message . "\n", 3, "../" . $_SESSION['database'] .".log");
+    function AuditLog($message, $startNewline = true) {
+        if($startNewline) {
+            error_log("\r\n$message", 3, "../" . $_SESSION['database'] .".log");
         } else {
             error_log($message, 3, "../" . $_SESSION['database'] .".log");
         }
